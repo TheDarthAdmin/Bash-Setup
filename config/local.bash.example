@@ -5,7 +5,7 @@
 # It is loaded before the rest of the profile, so settings here win.
 
 # Oh My Posh theme. After changing it, run: setup.sh --theme <name>
-# DARTH_POSH_THEME=kali
+# DARTH_POSH_THEME=darthadmin
 
 # Turn off ble.sh (predictions and syntax highlighting) and use plain readline.
 # DARTH_BLESH=0

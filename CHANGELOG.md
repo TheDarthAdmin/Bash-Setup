@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09 — darthadmin theme
+
+- New default Oh My Posh theme `darthadmin`, shared with the PowerShell repo:
+  blue frame and red name normally; red frame, bold name and `#` as root.
+- `setup.sh` installs themes from this repo first and refreshes them on every
+  run; built-in Oh My Posh theme names still work with `--theme`.
+
 ## 2026-09 — first release
 
 - `setup.sh` for Ubuntu, Debian, RHEL, Rocky, AlmaLinux and Fedora (x86_64 and

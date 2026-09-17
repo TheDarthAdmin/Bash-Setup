@@ -31,7 +31,8 @@ Usage: setup.sh [options]
       --install-font     Install Hack Nerd Font (Linux desktops only; for SSH
                          and WSL the font belongs on the machine you type on)
       --update           Re-download tools, ble.sh and the theme to latest
-      --theme <name>     Oh My Posh theme to store locally (default: kali)
+      --theme <name>     Oh My Posh theme to store locally (default: darthadmin;
+                         built-in names such as kali work too)
       --branch <name>    Branch to download repo files from (default: main)
       --skip-packages    Do not install distro packages (no sudo needed)
       --skip-tools       Do not install oh-my-posh / eza / fzf binaries
@@ -346,13 +347,25 @@ install_blesh() {
 install_theme() {
     step "Oh My Posh theme ($THEME)"
     local dest="$POSH_DIR/$THEME.omp.json"
-    if [[ -f $dest ]] && (( ! UPDATE )); then skip "Already stored at $dest"; return 0; fi
-    if (( DRY_RUN )); then would "store $dest"; return 0; fi
 
-    local url="https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/$THEME.omp.json"
-    download "$url" "$TMP_DIR/theme.json" || { fail "Theme '$THEME' not found at $url"; return 1; }
+    # This repo's own themes are always compared and refreshed, so theme
+    # changes arrive with a normal re-run.
+    if fetch_repo_file "themes/$THEME.omp.json" "$TMP_DIR/theme.json" 2>/dev/null; then
+        :
+    elif [[ -f $dest ]] && (( ! UPDATE )); then
+        skip "Already stored at $dest"
+        return 0
+    elif (( DRY_RUN )); then
+        would "download Oh My Posh theme '$THEME' to $dest"
+        return 0
+    else
+        local url="https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/$THEME.omp.json"
+        download "$url" "$TMP_DIR/theme.json" || { fail "Theme '$THEME' not found in this repo or at $url"; return 1; }
+        skip "Source: $url"
+    fi
+
     if has jq && ! jq empty "$TMP_DIR/theme.json" 2>/dev/null; then
-        fail 'The downloaded theme is not valid JSON; not installed.'; return 1
+        fail 'The theme is not valid JSON; not installed.'; return 1
     fi
     install_file "$TMP_DIR/theme.json" "$dest"
 }
@@ -490,7 +503,7 @@ summary() {
 main() {
     DRY_RUN=0; DIAGNOSE=0; INSTALL_EXTRAS=0; INSTALL_FONT=0; UPDATE=0; UNINSTALL=0
     SKIP_PACKAGES=0; SKIP_TOOLS=0; SKIP_BLESH=0
-    THEME=kali; BRANCH=main
+    THEME=darthadmin; BRANCH=main
 
     while (( $# )); do
         case $1 in

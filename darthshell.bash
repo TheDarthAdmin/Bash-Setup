@@ -35,7 +35,7 @@ __darth_has() { command -v "$1" >/dev/null 2>&1; }
 # ---------------------------------------------------------------------------
 # Settings -- override any of these in local.bash
 # ---------------------------------------------------------------------------
-: "${DARTH_POSH_THEME:=kali}"   # Oh My Posh theme (stored locally by setup.sh)
+: "${DARTH_POSH_THEME:=darthadmin}"   # Oh My Posh theme (stored locally by setup.sh)
 : "${DARTH_BLESH:=1}"           # 1 = ble.sh predictions/highlighting, 0 = plain readline
 : "${DARTH_ICONS:=1}"           # 1 = Nerd Font icons in listings (your *client* needs the font)
 

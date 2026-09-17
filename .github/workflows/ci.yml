@@ -62,7 +62,7 @@ jobs:
       - name: Prompt renders
         run: |
           ~/.local/bin/oh-my-posh print primary --shell bash \
-            --config ~/.config/oh-my-posh/kali.omp.json > /dev/null
+            --config ~/.config/oh-my-posh/darthadmin.omp.json > /dev/null
 
       - name: jwt-decode works
         run: |

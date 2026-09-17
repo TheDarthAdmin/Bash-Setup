@@ -3,7 +3,8 @@
 The Bash twin of [TheDarthAdmin/Powershell](https://github.com/TheDarthAdmin/Powershell):
 the same prompt, colours, key bindings and helpers, for Linux servers and WSL.
 
-- **Oh My Posh** with the `kali` theme, stored locally so it works offline
+- **Oh My Posh** with the `darthadmin` theme (the same prompt as in PowerShell),
+  stored locally so it works offline
 - **ble.sh** for grey inline suggestions from history and syntax highlighting,
   the Bash equivalent of PSReadLine predictions
 - **eza** listings with icons and git status (Terminal-Icons / PowerColorLS)
@@ -68,7 +69,7 @@ Run it once per user account. For root, run it from a root shell (`sudo -i`).
 | `--install-extras` | Also install fzf and the Ookla Speedtest CLI |
 | `--install-font` | Install Hack Nerd Font (Linux desktops only, see below) |
 | `--update` | Re-download Oh My Posh, eza, fzf, ble.sh and the theme |
-| `--theme <name>` | Oh My Posh theme to store locally (default `kali`) |
+| `--theme <name>` | Oh My Posh theme to store locally (default `darthadmin`; built-in names like `kali` work too) |
 | `--branch <name>` | Branch to download repo files from (default `main`) |
 | `--skip-packages` | Do not touch distro packages (no sudo needed) |
 | `--skip-tools` | Do not install the Oh My Posh / eza / fzf binaries |
@@ -84,7 +85,7 @@ Run it once per user account. For root, run it from a root shell (`sudo -i`).
 | Distro packages (only missing ones) | `curl git jq tar xz gawk unzip bash-completion` and basics |
 | Oh My Posh, eza, fzf, speedtest | `~/.local/bin` |
 | ble.sh | `~/.local/share/blesh` |
-| Theme | `~/.config/oh-my-posh/kali.omp.json` |
+| Theme | `~/.config/oh-my-posh/darthadmin.omp.json` |
 | Profile | `~/.config/darthshell/darthshell.bash` |
 | Your settings (never overwritten) | `~/.config/darthshell/local.bash` |
 | Hook | a marked block at the end of `~/.bashrc` |
@@ -104,6 +105,20 @@ Same house rules as the PowerShell profile: it never breaks the shell, never
 installs anything, never touches the network at startup, and prints nothing on
 a normal start. Without a real terminal (`scp`, scripts, CI) ble.sh is skipped
 automatically.
+
+### Prompt
+
+The `darthadmin` theme in `themes/` is shared with the PowerShell repo:
+
+```
+┌──(sdg💀MSI)-[~/projects]-[main]                    12ms  
+└─$
+```
+
+A normal user gets a blue frame with a red name and `$`. As root the whole
+frame turns red, the name goes bold and the prompt ends in `#`, so an elevated
+shell is impossible to miss. Colours are fixed hex values, so the prompt looks
+the same in any terminal.
 
 ### Keys
 
@@ -166,20 +181,12 @@ sessions do not lose each other's commands.
 
 ## WSL and Windows Terminal
 
-In WSL the colours, font and background come from Windows Terminal, not from
-Linux. Run the [Windows setup](https://github.com/TheDarthAdmin/Powershell)
-first: it installs Hack Nerd Font and the DarthAdmin colour scheme for every
-Terminal profile, including your WSL ones.
-
-To give a WSL profile the same background, open Terminal's `settings.json` and
-add these keys to that profile:
-
-```json
-"backgroundImage": "%LOCALAPPDATA%\\PwshShellSetup\\darthadmin-terminal.png",
-"backgroundImageAlignment": "bottomRight",
-"backgroundImageOpacity": 0.85,
-"backgroundImageStretchMode": "uniformToFill"
-```
+In WSL the colour scheme, font and background come from Windows Terminal, not
+from Linux. Run the [Windows setup](https://github.com/TheDarthAdmin/Powershell)
+once: besides the Hack Nerd Font it gives every WSL profile the DarthAdmin
+colour scheme and the same background as the PowerShell tabs. That matters
+because the Ubuntu and Debian packages ship their own Terminal colour scheme,
+which would otherwise win.
 
 The profile also tells Windows Terminal your current folder, so **Duplicate
 tab** and new panes open where you are.
@@ -199,7 +206,7 @@ Edit `~/.config/darthshell/local.bash` (`edit-profile`). It is loaded before
 the profile, so settings there win, and updates never touch it.
 
 ```bash
-DARTH_POSH_THEME=kali                                # then: setup.sh --theme <name>
+DARTH_POSH_THEME=darthadmin                          # then: setup.sh --theme <name>
 DARTH_BLESH=0                                        # plain readline, no ble.sh
 DARTH_ICONS=0                                        # no icons in listings
 DARTH_HISTORY_EXTRA_IGNORE=('*my-tool --key*')       # more history patterns
