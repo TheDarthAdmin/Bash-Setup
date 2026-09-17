@@ -1,0 +1,6 @@
+# Messages like 'Added to ~/.bashrc' show a literal tilde on purpose.
+disable=SC2088
+# 'cmd && ok ... || fail ...' is used where ok/fail only print.
+disable=SC2015
+# Text written into ~/.bashrc must keep $HOME and ${XDG_CONFIG_HOME} unexpanded.
+disable=SC2016

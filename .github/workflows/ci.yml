@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck
+        run: shellcheck setup.sh darthshell.bash config/local.bash.example
+
+  install:
+    needs: shellcheck
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - ubuntu:22.04
+          - ubuntu:24.04
+          - debian:12
+          - fedora:latest
+          - rockylinux:9
+          - almalinux:8
+    container: ${{ matrix.image }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: First run
+        run: ./setup.sh --install-extras
+
+      - name: Second run changes nothing
+        run: |
+          ./setup.sh --install-extras | tee second-run.log
+          if grep -E 'Installed |Backed up' second-run.log; then
+            echo '::error::the second run reinstalled or changed files'
+            exit 1
+          fi
+
+      - name: Profile loads cleanly in an interactive shell
+        run: |
+          bash -ic '
+            set -e
+            for c in pls ll mkcd jwt-decode entra-tenant sysinfo ports darth-help profile-load-time; do
+              type "$c" >/dev/null
+            done
+            darth-help >/dev/null
+            sysinfo
+            pls
+            [[ " ${PROMPT_COMMAND[*]} " == *__darth_prompt_pre* ]]
+            [[ " ${PROMPT_COMMAND[*]} " == *_omp_hook* ]]
+          ' 2> stderr.log
+          grep -vE 'job control|terminal process group' stderr.log > errors.log || true
+          if [[ -s errors.log ]]; then cat errors.log; exit 1; fi
+
+      - name: Prompt renders
+        run: |
+          ~/.local/bin/oh-my-posh print primary --shell bash \
+            --config ~/.config/oh-my-posh/kali.omp.json > /dev/null
+
+      - name: jwt-decode works
+        run: |
+          token='eyJhbGciOiJSUzI1NiJ9.eyJhdWQiOiJ4IiwiZXhwIjo0MTAyNDQ0ODAwfQ.sig'
+          bash -ic "jwt-decode $token" 2>/dev/null | jq -e '.aud == "x" and .isExpired == false'
+
+      - name: History filter
+        run: |
+          bash -ic '
+            for c in "export MY_API_TOKEN=abc" "mysql --password=x" "curl -H \"Authorization: Bearer abc\"" "kubectl get secrets"; do
+              HISTFILE=/dev/null; history -s "$c"
+            done
+            history
+          ' 2>/dev/null | tee hist.log
+          grep -q 'kubectl get secrets' hist.log
+          ! grep -qE 'MY_API_TOKEN|--password|Bearer' hist.log

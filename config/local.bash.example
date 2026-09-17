@@ -1,0 +1,22 @@
+# shellcheck shell=bash
+# ~/.config/darthshell/local.bash
+#
+# Your own settings. setup.sh creates this file once and never overwrites it.
+# It is loaded before the rest of the profile, so settings here win.
+
+# Oh My Posh theme. After changing it, run: setup.sh --theme <name>
+# DARTH_POSH_THEME=kali
+
+# Turn off ble.sh (predictions and syntax highlighting) and use plain readline.
+# DARTH_BLESH=0
+
+# Turn off icons in listings, e.g. when your SSH client has no Nerd Font.
+# DARTH_ICONS=0
+
+# Extra glob patterns that keep a command out of history.
+# DARTH_HISTORY_EXTRA_IGNORE=('*my-internal-tool --key*')
+
+# Runs after the profile has loaded: add your own aliases and functions here.
+# darthshell_post() {
+#     alias k='kubectl'
+# }
