@@ -201,6 +201,7 @@ install_packages() {
         'install:coreutils:coreutils'
         'find:findutils:findutils'
         'cmp:diffutils:diffutils'
+        'ps:procps:procps-ng'
         '/usr/share/bash-completion/bash_completion:bash-completion:bash-completion'
     )
     [[ $PKG == apt ]] && wanted+=('/etc/ssl/certs/ca-certificates.crt:ca-certificates:ca-certificates')
